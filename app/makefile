@@ -15,16 +15,11 @@ project_dependencies ?= $(addprefix $(project_root)/, \
 git_remote ?= https://github.com/leolani
 
 include util/make/makefile.base.mk
+include util/make/makefile.component.mk
 include util/make/makefile.py.base.mk
 include util/make/makefile.git.mk
 
 sources =
-
-include util/make/makefile.base.mk
-include util/make/makefile.py.base.mk
-include util/make/makefile.git.mk
-include makefile.helm.mk
-
 
 spacy.lock: venv
 	test -e spacy.lock || (source venv/bin/activate; python -m spacy download en)

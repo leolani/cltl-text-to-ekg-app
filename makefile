@@ -8,7 +8,6 @@ project_components = $(addprefix ${project_root}/, \
         cltl-combot \
         cltl-emissor-data \
         cltl-chat-ui \
-        cltl-dialogueclassification \
         cltl-knowledgeextraction \
         cltl-knowledgelinking \
         cltl-knowledgerepresentation \
