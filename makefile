@@ -8,6 +8,11 @@ project_components = $(addprefix ${project_root}/, \
         cltl-combot \
         cltl-emissor-data \
         cltl-chat-ui \
+        cltl-dialogueclassification \
+        cltl-knowledgeextraction \
+        cltl-knowledgelinking \
+        cltl-knowledgerepresentation \
+        cltl-languagegeneration \
         app)
 
 git_local ?= ..
@@ -19,7 +24,7 @@ include util/make/makefile.git.mk
 
 
 submodules := $(shell git submodule | xargs -L1 | cut -f 2 -d ' ' | grep -v util | xargs)
-
+	
 .PHONY: update-build
 update-build:
 	-git submodule foreach 'git submodule update --remote util'
@@ -37,3 +42,4 @@ update-build:
 	  && git add $(submodules) \
 		&& git commit -m "Updated cltl-build") \
 		  || (echo "Stash is not empty"; exit 1)
+

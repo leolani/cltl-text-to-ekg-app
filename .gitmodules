@@ -26,3 +26,19 @@
 	path = app/util
 	url = https://github.com/leolani/cltl-build.git
 	branch = main
+[submodule "cltl-knowledgeextraction"]
+	path = cltl-knowledgeextraction
+	url = https://github.com/leolani/cltl-knowledgeextraction.git
+	branch = main
+[submodule "cltl-knowledgelinking"]
+	path = cltl-knowledgelinking
+	url = https://github.com/leolani/cltl-knowledgelinking.git
+	branch = main
+[submodule "cltl-knowledgerepresentation"]
+	path = cltl-knowledgerepresentation
+	url = https://github.com/leolani/cltl-knowledgerepresentation.git
+	branch = main
+[submodule "cltl-languagegeneration"]
+	path = cltl-languagegeneration
+	url = https://github.com/leolani/cltl-languagegeneration.git
+	branch = main
