@@ -260,6 +260,10 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
             # TODO This is OK here, we need to see how this will work in a containerized setting
             replier = RLReplier(self.brain)
             repliers.append(replier)
+        if "LlamaReplier" in implementations:
+            from cltl.reply_generation.llama_replier import LlamaReplier
+            replier = LlamaReplier()
+            repliers.append(replier)
         if "SimpleNLGReplier" in implementations:
             from cltl.reply_generation.simplenlg_replier import SimpleNLGReplier
             # TODO This is OK here, we need to see how this will work in a containerized setting
