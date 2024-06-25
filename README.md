@@ -208,14 +208,40 @@ Below is an example of such a capsule extracted for the utterance "I have a hous
 ```
 
 ```commandline
+06/20/24 14:54:58 DEBUG    cltl_service.brain.service                                   
+Capsule: ({'chat': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 
+'turn': 'c4428b6e-b8d2-4bbf-986a-2d1d05b0dcb1', 
+'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 
+'utterance': 'John likes music', 'utterance_type': <UtteranceType.STATEMENT: '1'>, 'position': '0-16', 
+'subject': {'label': 'john', 'type': [], 'uri': 'http://cltl.nl/leolani/world/john'}, 
+'predicate': {'label': 'like', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/like'}, 
+'object': {'label': 'music', 'type': [], 'uri': 'http://cltl.nl/leolani/world/music'}, 
+'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 
+'context_id': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'timestamp': 1718888097825})
 ```
 
 In this example, the human interlocutor is anonymous and identified as "Human". 
 
 ```commandline
+06/20/24 14:55:27 DEBUG    cltl_service.brain.service                                   
+Processed UtteranceType.STATEMENT (
+{'response': '204', 'statement': {'chat': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'turn': 'c4428b6e-b8d2-4bbf-986a-2d1d05b0dcb1', 
+'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 
+'utterance': 'John likes music', 'utterance_type': <UtteranceType.STATEMENT: '1'>, 'position': '0-16', 'subject': {'label': 'john', 'type': ['john'], 'uri': 'http://cltl.nl/leolani/world/john'}, 'predicate': {'label': 'like', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/like'}, 'object': {'label': 'music', 'type': ['music'], 'uri': 'http://cltl.nl/leolani/world/music'}, 'perspective': <cltl.brain.infrastructure.api.Perspective object at 0x12a55a280>, 'context_id': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'timestamp': 1718888097825, 'triple': john_like_music [john_->_music])}, 'thoughts': {'statement_novelty': [], 'entity_novelty': new subject - new object, 'negation_conflicts': [], 'complement_conflict': [], 'subject_gaps': 96 gaps as subject: e.g. john be-from location - 44 gaps as object: e.g. john know agent, 'complement_gaps': 95 gaps as subject: e.g. music be-parent-of agent - 43 gaps as object: e.g. music be-grandfather-of agent, 'overlaps': 0 subject overlaps: e.g. '' - 0 object overlaps: e.g. ''}, 'rdf_log_path': PosixPath('storage/rdf/2024-06-20-14-53/brain_log_2024-06-20-14-55-24-455739')})
+
+```
+
+```commandline
+Leolani> If you don't mind me asking. Has john been spouse of person?
 ```
 The triple extraction not only processes the input utterances of the user but also 
+```commandline
+06/20/24 14:57:51 DEBUG    cltl_service.brain.service                                   Processed UtteranceType.QUESTION ({'response': [{'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/john'}, 'slabel': {'type': 'literal', 'value': 'john'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': 'human'}, 'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}], 'question': {'chat': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'turn': '022094c8-8905-422f-90d7-302df076d1c5', 'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 'utterance': 'Who likes music?', 'utterance_type': <UtteranceType.QUESTION: '2'>, 'position': '0-16', 'subject': {'label': '', 'type': [], 'uri': None}, 'predicate': {'label': 'like', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/like'}, 'object': {'label': 'music', 'type': [], 'uri': 'http://cltl.nl/leolani/world/music'}, 'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 'context_id': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'timestamp': 1718888271633, 'triple': ?_like_music [_->_])}, 'rdf_log_path': None})
+06/20/24 14:57:51 DEBUG    cltl_service.brain.service                                   Capsule: ({'chat': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'turn': '022094c8-8905-422f-90d7-302df076d1c5', 'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 'utterance': 'Who likes music?', 'utterance_type': <UtteranceType.QUESTION: '2'>, 'position': '0-16', 'subject': {'label': '', 'type': [], 'uri': None}, 'predicate': {'label': 'like', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/like'}, 'object': {'label': 'music', 'type': [], 'uri': 'http://cltl.nl/leolani/world/music'}, 'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 'context_id': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'timestamp': 1718888271633})
+06/20/24 14:57:51 WARNING  cltl.brain.RdfBuilder                                        Unknown type: music
+06/20/24 14:57:51 INFO     cltl.brain.LongTermMemory                                    Triple in question: ?_like_music [_->_])
 
+```
 ```commandline
 {'chat': 'b34e27aa-d916-4681-9a55-bd25f5478805', 
 'turn': '0598c96e-5e64-4c4a-a317-8660f387d747', 
@@ -227,6 +253,28 @@ The triple extraction not only processes the input utterances of the user but al
 'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 
 'context_id': 'b34e27aa-d916-4681-9a55-bd25f5478805', 
 'timestamp': 1717753894674, 'triple': ?_like_music [_->_])})
+```
+
+```commandline
+06/20/24 14:57:51 DEBUG    cltl_service.brain.service                                   
+Processed UtteranceType.QUESTION ({'response': [
+{'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/john'}, 'slabel': {'type': 'literal', 'value': 'john'}, 
+'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 
+'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 
+'authorlabel': {'type': 'literal', 'value': 'human'}, 'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}], 
+'question': {'chat': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'turn': '022094c8-8905-422f-90d7-302df076d1c5', 
+'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 
+'utterance': 'Who likes music?', 'utterance_type': <UtteranceType.QUESTION: '2'>, 'position': '0-16', 
+'subject': {'label': '', 'type': [], 'uri': None}, 
+'predicate': {'label': 'like', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/like'}, 
+'object': {'label': 'music', 'type': [], 'uri': 'http://cltl.nl/leolani/world/music'}, 
+'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 
+'context_id': 'f51d2acf-a7df-4156-90e4-1c00ee0ffbd5', 'timestamp': 1718888271633, 
+'triple': ?_like_music [_->_])}, 'rdf_log_path': None})
+```
+
+```commandline
+Leolani> I have heard this before. I have heard about music before
 ```
 ```commandline
 ({'response': [{'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/leolani'}, 
@@ -251,14 +299,95 @@ The triple extraction not only processes the input utterances of the user but al
 'authorlabel': {'type': 'literal', 'value': 'human'}, 'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}, {'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/human'}, 'slabel': {'type': 'literal', 'value': 'human'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': ''}}, {'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/i'}, 'slabel': {'type': 'literal', 'value': 'i'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': 'human'}, 'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}, {'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/thomas'}, 'slabel': {'type': 'literal', 'value': 'thomas'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': ''}}, {'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/who'}, 'slabel': {'type': 'literal', 'value': 'who'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': 'human'}, 'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}], 'question': {'chat': 'b34e27aa-d916-4681-9a55-bd25f5478805', 'turn': '0598c96e-5e64-4c4a-a317-8660f387d747', 'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 'utterance': 'who likes music?', 'utterance_type': <UtteranceType.QUESTION: '2'>, 'position': '0-16', 'subject': {'label': '', 'type': [], 'uri': None}, 'predicate': {'label': 'like', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/like'}, 'object': {'label': 'music', 'type': [], 'uri': 'http://cltl.nl/leolani/world/music'}, 'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 'context_id': 'b34e27aa-d916-4681-9a55-bd25f5478805', 'timestamp': 1717753894675, 'triple': ?_like_music [_->_])}, 'rdf_log_path': None})
 
 ```
+
+```commandline
+Capsule: ({'chat': '5d75a43e-12ff-4859-9857-8abf02369468', 
+'turn': '1f149469-7cf0-4a24-9b85-46a88e74281e', 
+'author': {'label': 'Human', 'type': ['person'], 
+'uri': 'http://cltl.nl/leolani/world/human'}, 
+'utterance': 'John likes music', 'utterance_type': <UtteranceType.STATEMENT: '1'>, 'position': '0-16', 
+'subject': {'label': 'that', 'type': [], 'uri': 'http://cltl.nl/leolani/world/that'}, 
+'predicate': {'label': 'hear', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/hear'}, 
+'object': {'label': 'leolani', 'type': ['robot'], 'uri': 'http://cltl.nl/leolani/world/leolani'}, 
+'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 
+'context_id': '5d75a43e-12ff-4859-9857-8abf02369468', 'timestamp': 1718886740179})
+
+```
 ### Knowledge response
 
-
 The JSON capsule is pushed as an output topic to the event bus, where it is picked up by the knowledge-representation module that integrates it in the eKG. Next it calls the reasoner module to analyse the impact of the integration. 
+There are two types of user input and two types of responses:
+
+* user makes a statement, agent responds with a question or a statement
+* user asks a question, agents responds with an answer (including a response in case there is no answer)
 
 
+```commandline
+Processed UtteranceType.STATEMENT 
+({'response': '204', 
+'statement': {'chat': '5d75a43e-12ff-4859-9857-8abf02369468', 
+'turn': '1f149469-7cf0-4a24-9b85-46a88e74281e', 
+'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 
+'utterance': 'John likes music', 'utterance_type': <UtteranceType.STATEMENT: '1'>, 'position': '0-16', 'subject': {'label': 'that', 'type': ['food'], 'uri': 'http://cltl.nl/leolani/world/that'}, 'predicate': {'label': 'hear', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/hear'}, 'object': {'label': 'leolani', 'type': ['robot'], 'uri': 'http://cltl.nl/leolani/world/leolani'}, 'perspective': <cltl.brain.infrastructure.api.Perspective object at 0x1324f8b50>, 'context_id': '5d75a43e-12ff-4859-9857-8abf02369468', 'timestamp': 1718886740179, 'triple': that_hear_leolani [food_->_robot])}, 'thoughts': {'statement_novelty': [], 'entity_novelty': new subject - existing object, 'negation_conflicts': [], 'complement_conflict': [], 'subject_gaps': 0 gaps as subject: e.g. '' - 0 gaps as object: e.g. '', 'complement_gaps': 100 gaps as subject: e.g. leolani be-partner-of person - 71 gaps as object: e.g. leolani be-husband-of agent, 'overlaps': 0 subject overlaps: e.g. '' - 0 object overlaps: e.g. ''}, 'rdf_log_path': PosixPath('storage/rdf/2024-06-20-14-24/brain_log_2024-06-20-14-32-25-566253')})
+
+```
+```
+({'response': '204', 'statement': 
+{'chat': '5d75a43e-12ff-4859-9857-8abf02369468', 'turn': '4d4be41d-1f43-416a-8132-ba3bbf925978', 
+'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 
+'utterance': 'I have a house', 'utterance_type': <UtteranceType.STATEMENT: '1'>, 'position': '0-14', 
+'subject': {'label': 'human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 
+'predicate': {'label': 'have', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/have'}, 
+'object': {'label': 'a-house', 'type': ['🐕'], 'uri': 'http://cltl.nl/leolani/world/a-house'}, 
+'perspective': <cltl.brain.infrastructure.api.Perspective object at 0x132584a30>, 
+'context_id': '5d75a43e-12ff-4859-9857-8abf02369468', 'timestamp': 1718886330994, 
+'triple': human_have_a-house [human_->_🐕])}, 
+'thoughts': {'statement_novelty': [], 
+'entity_novelty': existing subject - existing object, 
+'negation_conflicts': [], 
+'complement_conflict': [], 
+'subject_gaps': 100 gaps as subject: e.g. leolani read book - 71 gaps as object: e.g. leolani be-grandmother-of agent, 
+'complement_gaps': 5 gaps as subject: e.g. a-house be-inside container - 29 gaps as object: e.g. a-house write person, 
+'overlaps': 0 subject overlaps: e.g. '' - 0 object overlaps: e.g. ''}, 
+'rdf_log_path': PosixPath('storage/rdf/2024-06-20-14-24/brain_log_2024-06-20-14-25-31-252186')})
+```
+
+```commandline
+"That rings a bell. I have heard about a house before"
+```
+The next response shows an answer of the agent to a question of the user
+
+```
 brain_response[response]) 
-{'response': [{'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/piek'}, 'slabel': {'type': 'literal', 'value': 'piek'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': ''}}, {'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/'}, 'slabel': {'type': 'literal', 'value': 'None'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': 'human'}, 'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}, {'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/human'}, 'slabel': {'type': 'literal', 'value': 'human'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': ''}}, {'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/i'}, 'slabel': {'type': 'literal', 'value': 'i'}, 'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 'authorlabel': {'type': 'literal', 'value': 'human'}, 'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}], 'question': {'chat': '44b0b157-2cce-45f4-b4e7-cc61df19b777', 'turn': '14179620-0b9b-4890-b94e-9938e4d397dd', 'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 'utterance': 'who likes music', 'utterance_type': <UtteranceType.QUESTION: '2'>, 'position': '0-15', 'subject': {'label': '', 'type': [], 'uri': None}, 'predicate': {'label': 'like', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/like'}, 'object': {'label': 'music', 'type': [], 'uri': 'http://cltl.nl/leolani/world/music'}, 'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 'context_id': '44b0b157-2cce-45f4-b4e7-cc61df19b777', 'timestamp': 1717667799167, 'triple': ?_like_music [_->_])}, 'rdf_log_path': None}
-
+{'response': [
+{'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/piek'}, 'slabel': {'type': 'literal', 'value': 'piek'}, 
+'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 
+'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 
+'authorlabel': {'type': 'literal', 'value': ''}}, 
+{'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/'}, 'slabel': {'type': 'literal', 'value': 'None'}, 
+'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 
+'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 
+'authorlabel': {'type': 'literal', 'value': 'human'}, 'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}, 
+{'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/human'}, 'slabel': {'type': 'literal', 'value': 'human'}, 
+'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 
+'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 
+'authorlabel': {'type': 'literal', 'value': ''}}, 
+{'s': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/i'}, 'slabel': {'type': 'literal', 'value': 'i'}, 
+'p': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 'pOriginal': {'type': 'uri', 'value': 'http://cltl.nl/leolani/n2mu/like'}, 
+'o': {'type': 'uri', 'value': 'http://cltl.nl/leolani/world/music'}, 'olabel': {'type': 'literal', 'value': 'music'}, 
+'authorlabel': {'type': 'literal', 'value': 'human'}, 
+'certaintyValue': {'type': 'literal', 'value': 'CERTAIN'}, 
+'polarityValue': {'type': 'literal', 'value': 'POSITIVE'}, 
+'sentimentValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}, 
+'emotionValue': {'type': 'literal', 'value': 'UNDERSPECIFIED'}}], 
+'question': {'chat': '44b0b157-2cce-45f4-b4e7-cc61df19b777', 'turn': '14179620-0b9b-4890-b94e-9938e4d397dd', 'author': {'label': 'Human', 'type': ['person'], 'uri': 'http://cltl.nl/leolani/world/human'}, 
+'utterance': 'who likes music', 'utterance_type': <UtteranceType.QUESTION: '2'>, 'position': '0-15', 
+'subject': {'label': '', 'type': [], 'uri': None}, 
+'predicate': {'label': 'like', 'type': [], 'uri': 'http://cltl.nl/leolani/n2mu/like'}, 
+'object': {'label': 'music', 'type': [], 'uri': 'http://cltl.nl/leolani/world/music'}, 
+'perspective': {'sentiment': 0.0, 'certainty': 1.0, 'polarity': 1.0, 'emotion': 0.0}, 
+'context_id': '44b0b157-2cce-45f4-b4e7-cc61df19b777', 'timestamp': 1717667799167, 
+'triple': ?_like_music [_->_])}, 'rdf_log_path': None}
+```
 LenkaReplier
 someone told me piek like music and that you like music and that thomas like music and you told me I like music and that human like music and that i like music and that who like music
