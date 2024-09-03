@@ -7,7 +7,7 @@ cltl.chat-ui[service]
 cltl.brain[service]
 cltl.triple_extraction[service, conversational]
 cltl.entity_linking
-cltl.reply_generation[service]
+cltl.reply_generation[service,llama]
 
 
 flask

@@ -20,6 +20,7 @@ tokenizers==0.11.6
 torch==1.13.1
 cffi==1.14.6
 jiwer==2.2.0
+openai==1.43.0
 
 # REST/JSON/Messaging support
 Flask==1.1.2
