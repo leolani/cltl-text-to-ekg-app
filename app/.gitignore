@@ -132,3 +132,15 @@ dmypy.json
 .idea/
 
 makefile.d
+
+.idea/
+
+makefile.d
+
+py-app/data/scenarios/*
+py-app/resources/*
+spacy.lock
+nltk.lock
+
+
+**/.DS_Store
