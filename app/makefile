@@ -33,8 +33,8 @@ nltk.lock: venv
 
 py-app/resources/conversational_triples/models.lock:
 	mkdir -p py-app/resources/conversational_triples
-	wget "https://vu.data.surfsara.nl/index.php/s/Ib6OcZHpfUyB5fm" -O py-app/resources/conversational_triples/argument_extraction_bert-base-multilingual-cased.pt
-	wget "https://vu.data.surfsara.nl/index.php/s/LKTkoSZZpflaIaw" -O py-app/resources/conversational_triples/candidate_scorer_bert-base-multilingual-cased.pt
+	wget "https://vu.data.surfsara.nl/index.php/s/Ib6OcZHpfUyB5fm/download" -O py-app/resources/conversational_triples/argument_extraction_bert-base-multilingual-cased.pt
+	wget "https://vu.data.surfsara.nl/index.php/s/LKTkoSZZpflaIaw/download" -O py-app/resources/conversational_triples/candidate_scorer_bert-base-multilingual-cased.pt
 	wget "https://vu.data.surfsara.nl/index.php/s/WpL1vFChlQpkbqW/download" -O py-app/resources/conversational_triples/models.zip
 	unzip -j -d py-app/resources/conversational_triples py-app/resources/conversational_triples/models.zip
 	rm py-app/resources/conversational_triples/models.zip
