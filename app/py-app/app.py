@@ -1,3 +1,4 @@
+import argparse
 import logging.config
 import logging.config
 import os
@@ -349,6 +350,9 @@ class ApplicationContainer(ChatUIContainer,
                            ReplierContainer,
                            BrainContainer,
                            EmissorStorageContainer):
+    def __init__(self, name: str):
+        self._name = name
+
     @property
     @singleton
     def log_writer(self):
@@ -384,7 +388,7 @@ class ApplicationContainer(ChatUIContainer,
         scenario_start = timestamp_now()
 
         agent = Agent("Leolani", "http://cltl.nl/leolani/world/leolani")
-        speaker = Agent("Human", "http://cltl.nl/leolani/world/human")
+        speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
         scenario_context = ApplicationContext(agent, speaker)
         scenario = Scenario.new_instance(str(uuid.uuid4()), scenario_start, None, scenario_context, signals)
 
@@ -416,10 +420,10 @@ def serializer(obj):
             return str(obj)
 
 
-def main():
+def main(name: str):
     ApplicationContainer.load_configuration()
     logger.info("Initialized Application")
-    application = ApplicationContainer()
+    application = ApplicationContainer(name)
 
     with application as started_app:
         routes = {
@@ -427,10 +431,17 @@ def main():
             '/chatui': started_app.chatui_service.app,
         }
 
-        web_app = DispatcherMiddleware(Flask("Demo app"), routes)
+        web_app = DispatcherMiddleware(Flask("Text-eKG-Text app"), routes)
 
         run_simple('0.0.0.0', 8000, web_app, threaded=True, use_reloader=False, use_debugger=False, use_evalex=True)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Text-eKG-Text app')
+    parser.add_argument('--name', type=str, required=False, help="Speaker name", default="Alice")
+    args, _ = parser.parse_known_args()
+
+    if not args.name.strip().isalpha():
+        raise ValueError("The --name argument must contain only alphabet characters")
+
+    main(args.name.strip())
