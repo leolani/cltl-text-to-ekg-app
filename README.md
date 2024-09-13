@@ -1,11 +1,20 @@
 # Text to episodic Knowledge Graph
 This is an example application that demonstrates how the Leolani event bus can be combined with an episodic Knowledge Graph (eKG). 
-It represents an agent that takes a text signal from the event bus to do the following:
+It represents an agent that takes a text signal from the event bus to do the following.
+
+If the text is a statement:
 
 1) extract triples, 
 2) push triples to an external triple store that functions as the eKG, 
-3) reason over the impact of the changes in the graph and return graphh patterns as response,
+3) reason over the impact of the changes in the graph and return graph patterns as a response,
 4) verbalise one of the graph patterns as the response.
+
+If the text is a question:
+
+1) extract the question,
+2) Send the question as a SPARQL query to the eKG
+3) Send the results back to the event bus as a response
+4) verbalize the responss
 
 The verbalised response is pushed back as a text signal to the event bus. 
 The user input and the agent response as text signals are taken from and fed to the ChatUI application 
@@ -15,6 +24,66 @@ The eKG will thus grow as the conversation proceeds.
 This agent requires that [GraphDB](https://graphdb.ontotext.com) is installed as a triple store and is running in parallel. 
 
 This application is chat-only. It can be extended with speech and image processing components to make it multimodal.
+
+## Check-out
+
+To check out all code needed for the Leolani App, clone this repository including all submodules:
+
+        git clone --recurse-submodules -j8 https://github.com/leolani/cltl-text-to-ekg-app.git
+
+Checkout the current state of the parent
+
+        git checkout --recurse-submodules
+
+To pull the latest changes, you can run:
+
+        git pull --recurse-submodules
+
+
+After checkout of the main repository and the submodules, the repository content is as follows:
+
+```
+-rw-r--r--   1 staff  staff  2552 May 25 14:13 README.md
+-rw-r--r--   1 staff  staff     9 May 25 14:13 VERSION
+drwxr-xr-x  14 staff  staff   448 May 25 14:13 app
+drwxr-xr-x   3 staff  staff    96 May 25 14:22 cltl-chat-ui
+drwxr-xr-x   3 staff  staff    96 May 25 14:22 cltl-combot
+drwxr-xr-x   3 staff  staff    96 May 25 14:22 cltl-emissor-data
+drwxr-xr-x  17 staff  staff   544 May 25 17:41 cltl-knowledgeextraction
+drwxr-xr-x  16 staff  staff   512 May 25 17:41 cltl-knowledgelinking
+drwxr-xr-x  16 staff  staff   512 May 25 17:20 cltl-knowledgerepresentation
+drwxr-xr-x  15 staff  staff   480 May 25 17:21 cltl-languagegeneration
+drwxr-xr-x  14 staff  staff   448 May 25 14:13 cltl-requirements
+drwxr-xr-x  27 staff  staff   864 May 25 17:12 emissor
+-rw-r--r--   1 staff  staff   901 May 25 14:13 makefile
+drwxr-xr-x   3 staff  staff    96 May 25 15:07 util
+```
+To build the agent, run the "make build" command (twice!) from the root and activate the virtual environment that is created.
+
+## Run the agent
+
+Checkout the repository as described in [Check-out](#check-out). Then go to the repository root, build the project,
+activate the virtual environment for the Python application and run it. Altogether:
+
+        git clone --recurse-submodules -j8 https://github.com/leolani/cltl-text-to-ekg-app.git
+        cd cltl-text-to-ekg-app
+        make build
+        source venv/bin/activate
+        cd py-app
+        python app.py
+
+The default name for you as a user is "Alice", the name of the agent is "Leolani". If you want to launch the system with a different name you can start it with:
+
+        ```python app.py --name "your-name"```
+
+You can then go to the chat interface [here](http://0.0.0.0:8000/chatui/static/chat.html) to type and see what the system responds.
+
+NOTES:
+
+* The "make build" may take 5 - 10 min
+* If you use a knowledge Graph, remember to launch GraphDB and have a repository called 'sandbox'
+* Remember to launch Docker before running
+* Remember to use the virtual environment (created by the make buildcommand) located at cltl-text-to-ekg-app/venv
 
 ## Event bus integration
 
@@ -98,63 +167,6 @@ for each run of the application. This agent saves the following data to disk for
 3. files in a subfolder named "rdf" with the triples that have been added to the Knowledge Graph in RDF-trig format
 
 See the documentation for EMISSOR for more details.
-
-## Check-out
-
-To check out all code needed for the Leolani App, clone this repository including all submodules:
-
-        git clone --recurse-submodules -j8 https://github.com/leolani/cltl-text-to-ekg-app.git
-
-Checkout the current state of the parent
-
-        git checkout --recurse-submodules
-
-To pull the latest changes, you can run:
-
-        git pull --recurse-submodules
-
-
-After checkout of the main repository and the submodulres, the repository content is as follows:
-
-```
--rw-r--r--   1 staff  staff  2552 May 25 14:13 README.md
--rw-r--r--   1 staff  staff     9 May 25 14:13 VERSION
-drwxr-xr-x  14 staff  staff   448 May 25 14:13 app
-drwxr-xr-x   3 staff  staff    96 May 25 14:22 cltl-chat-ui
-drwxr-xr-x   3 staff  staff    96 May 25 14:22 cltl-combot
-drwxr-xr-x   3 staff  staff    96 May 25 14:22 cltl-emissor-data
-drwxr-xr-x  17 staff  staff   544 May 25 17:41 cltl-knowledgeextraction
-drwxr-xr-x  16 staff  staff   512 May 25 17:41 cltl-knowledgelinking
-drwxr-xr-x  16 staff  staff   512 May 25 17:20 cltl-knowledgerepresentation
-drwxr-xr-x  15 staff  staff   480 May 25 17:21 cltl-languagegeneration
-drwxr-xr-x  14 staff  staff   448 May 25 14:13 cltl-requirements
-drwxr-xr-x  27 staff  staff   864 May 25 17:12 emissor
--rw-r--r--   1 staff  staff   901 May 25 14:13 makefile
-drwxr-xr-x   3 staff  staff    96 May 25 15:07 util
-```
-To build the agent, run the "make build" command from the root and activate the virtual environment that is created.
-
-## Run the agent
-
-Checkout the repository as described in [Check-out](#check-out). Then go to the repository root, build the project,
-activate the virtual environment for the Python application and run it. Altogether:
-
-        git clone --recurse-submodules -j8 https://github.com/leolani/cltl-text-to-ekg-app.git
-        cd cltl-text-to-ekg-app
-        make build
-        source venv/bin/activate
-        cd py-app
-        python app.py
-
-You can then go to the chat interface [here](http://0.0.0.0:8000/chatui/static/chat.html) to type and see what the system responses through the ChatUI.
-
-NOTES:
-
-* The "make build" may take 5 - 10 min
-* If you use a knowledge Graph, remember to launch GraphDB and have a repository called 'sandbox'
-* Remember to launch Docker before running
-* Remember to use the virtual environment (created by the make buildcommand) located at cltl-text-to-ekg-app/venv
-
 ## Details about the components
 
 ### Triple extraction
