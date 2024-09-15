@@ -8,7 +8,7 @@ import pathlib
 
 from cltl.chatui.api import Chats
 from cltl.chatui.memory import MemoryChats
-from cltl.combot.event.emissor import Agent, ScenarioStarted, ScenarioStopped
+from cltl.combot.event.emissor import Agent, ScenarioStarted, ScenarioStopped, TextSignalEvent
 from cltl.combot.infra.config.k8config import K8LocalConfigurationContainer
 from cltl.combot.infra.di_container import singleton
 from cltl.combot.infra.event import Event
@@ -18,6 +18,7 @@ from cltl.combot.infra.resource.threaded import ThreadedResourceContainer
 from cltl.combot.infra.time_util import timestamp_now
 from cltl.emissordata.api import EmissorDataStorage
 from cltl.emissordata.file_storage import EmissorDataFileStorage
+from emissor.representation.scenario import TextSignal
 from cltl_service.chatui.service import ChatUiService
 from cltl_service.combot.event_log.service import EventLogService
 from emissor.representation.scenario import Modality, Scenario, ScenarioContext
@@ -52,6 +53,7 @@ logger = logging.getLogger(__name__)
 
 class InfraContainer(SynchronousEventBusContainer, K8LocalConfigurationContainer, ThreadedResourceContainer):
     pass
+
 
 class EmissorStorageContainer(InfraContainer):
     @property
@@ -106,6 +108,7 @@ class ChatUIContainer(InfraContainer):
         finally:
             super().stop()
 
+
 #### Added containers
 class TripleExtractionContainer(EmissorStorageContainer, InfraContainer):
     @property
@@ -141,15 +144,17 @@ class TripleExtractionContainer(EmissorStorageContainer, InfraContainer):
             max_triples = config.get_int("max_triples")
             batch_size = config.get_int("batch_size")
             dialogue_acts = [DialogueAct.STATEMENT]
-            analyzers.append(ConversationalAnalyzer(model_path=model_path, base_model=base_model, threshold = threshold, max_triples= max_triples, batch_size = batch_size,
+            analyzers.append(ConversationalAnalyzer(model_path=model_path, base_model=base_model, threshold=threshold,
+                                                    max_triples=max_triples, batch_size=batch_size,
                                                     dialogue_acts=dialogue_acts, lang=language))
 
         if not analyzers:
             raise ValueError("No supported analyzers in " + implementation)
 
         logger.info("Using analyzers %s in Triple Extraction", implementation)
-            
-        return TripleExtractionService.from_config(ChatAnalyzer(analyzers, timeout=timeout), self.emissor_data_client, self.event_bus,
+
+        return TripleExtractionService.from_config(ChatAnalyzer(analyzers, timeout=timeout), self.emissor_data_client,
+                                                   self.event_bus,
                                                    self.resource_manager, self.config_manager)
 
     def start(self):
@@ -163,6 +168,7 @@ class TripleExtractionContainer(EmissorStorageContainer, InfraContainer):
             self.triple_extraction_service.stop()
         finally:
             super().stop()
+
 
 class BrainContainer(InfraContainer):
     @property
@@ -195,6 +201,7 @@ class BrainContainer(InfraContainer):
         finally:
             super().stop()
 
+
 class DisambiguationContainer(BrainContainer, InfraContainer):
     @property
     @singleton
@@ -213,7 +220,7 @@ class DisambiguationContainer(BrainContainer, InfraContainer):
         if "FaceIDLinker" in implementations:
             from cltl.entity_linking.face_linker import FaceIDLinker
             linker = FaceIDLinker(address=brain_address,
-                                       log_dir=pathlib.Path(brain_log_dir))
+                                  log_dir=pathlib.Path(brain_log_dir))
             linkers.append(linker)
         if "PronounLinker" in implementations:
             # TODO This is OK here, we need to see how this will work in a containerized setting
@@ -241,6 +248,7 @@ class DisambiguationContainer(BrainContainer, InfraContainer):
             self.disambiguation_service.stop()
         finally:
             super().stop()
+
 
 class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
     @property
@@ -288,6 +296,7 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
         finally:
             super().stop()
 
+
 #
 # class NLPContainer(InfraContainer):
 #     @property
@@ -317,7 +326,6 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
 ##### End of added containers
 
 
-
 class DemoContainer(InfraContainer):
     @property
     @singleton
@@ -344,6 +352,7 @@ class DemoContainer(InfraContainer):
 class ApplicationContext(ScenarioContext):
     speaker: Agent
 
+
 class ApplicationContainer(ChatUIContainer,
                            TripleExtractionContainer,
                            DisambiguationContainer,
@@ -369,7 +378,7 @@ class ApplicationContainer(ChatUIContainer,
         scenario_topic = self.config_manager.get_config("cltl.context").get("topic_scenario")
         scenario = self._create_scenario()
         self.event_bus.publish(scenario_topic,
-                                Event.for_payload(ScenarioStarted.create(scenario)))
+                               Event.for_payload(ScenarioStarted.create(scenario)))
         self._scenario = scenario
         logger.info("Started scenario %s", scenario)
 
@@ -377,7 +386,7 @@ class ApplicationContainer(ChatUIContainer,
         scenario_topic = self.config_manager.get_config("cltl.context").get("topic_scenario")
         self._scenario.ruler.end = timestamp_now()
         self.event_bus.publish(scenario_topic,
-                                Event.for_payload(ScenarioStopped.create(self._scenario)))
+                               Event.for_payload(ScenarioStopped.create(self._scenario)))
         logger.info("Stopped scenario %s", self._scenario)
 
     def _create_scenario(self):
@@ -391,7 +400,9 @@ class ApplicationContainer(ChatUIContainer,
         speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
         scenario_context = ApplicationContext(agent, speaker)
         scenario = Scenario.new_instance(str(uuid.uuid4()), scenario_start, None, scenario_context, signals)
-
+        utterance = f"Greetings", speaker.name, "my name is", agent.name, "happy to talk to you!"
+        signal = TextSignal.for_scenario(scenario, timestamp_now(), timestamp_now(), None, utterance)
+        self.event_bus.publish("cltl.topic.text_out", Event.for_payload(TextSignalEvent.for_agent(signal)))
         return scenario
 
     def start(self):
