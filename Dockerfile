@@ -60,4 +60,6 @@ WORKDIR /leolani-text-to-ekg/app
 RUN rm spacy.lock; make spacy.lock project_dependencies=""
 
 WORKDIR /leolani-text-to-ekg/app/py-app
-CMD source /leolani-text-to-ekg/app/venv/bin/activate && python app.py
+ARG NAME
+CMD source /leolani-text-to-ekg/app/venv/bin/activate && python app.py --name $NAME
+#CMD /bin/sh -c "source /leolani-text-to-ekg/app/venv/bin/activate && python app.py"
