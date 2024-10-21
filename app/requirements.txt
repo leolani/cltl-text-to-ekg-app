@@ -10,6 +10,6 @@ cltl.entity_linking
 cltl.reply_generation[service,llama]
 cltl.about-agent
 cltl.dialogueclassification[impl, service]
-cltl.emotionrecognition[nltk, go, face, service]
+cltl.emotionrecognition[nltk, go, service]
 flask
 werkzeug
