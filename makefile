@@ -12,6 +12,8 @@ project_components = $(addprefix ${project_root}/, \
         cltl-knowledgelinking \
         cltl-knowledgerepresentation \
         cltl-languagegeneration \
+        cltl-dialogueclassification \
+        cltl-emotionrecognition \
         app)
 
 git_local ?= ..

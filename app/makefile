@@ -10,6 +10,8 @@ project_dependencies ?= $(addprefix $(project_root)/, \
         cltl-knowledgelinking \
         cltl-knowledgerepresentation \
         cltl-languagegeneration \
+        cltl-dialogueclassification \
+        cltl-emotionrecognition \
 		app)
 
 git_remote ?= https://github.com/leolani
@@ -30,6 +32,18 @@ spacy.lock: venv
 nltk.lock: venv
 	test -e nltk.lock || (source venv/bin/activate; python -m nltk.downloader -d ~/nltk_data all)
 	touch nltk.lock
+
+
+py-app/resources/face_models/models.lock:
+	mkdir -p py-app/resources/face_models
+	wget -qO- "https://vu.data.surfsara.nl/index.php/s/VmSbPHFMJSNExou/download" | tar xvz -C py-app/resources/face_models
+	touch py-app/resources/face_models/models.lock
+
+
+py-app/resources/midas-da-roberta/classifier.pt:
+	mkdir -p py-app/resources/midas-da-roberta
+	wget -O py-app/resources/midas-da-roberta/classifier.pt "https://vu.data.surfsara.nl/index.php/s/lRlx3VfSJzY4h6X/download"
+
 
 py-app/resources/conversational_triples/models.lock:
 	mkdir -p py-app/resources/conversational_triples

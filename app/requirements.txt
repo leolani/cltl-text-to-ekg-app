@@ -8,7 +8,8 @@ cltl.brain[service]
 cltl.triple_extraction[service, conversational]
 cltl.entity_linking
 cltl.reply_generation[service,llama]
-
-
+cltl.about-agent
+cltl.dialogueclassification[impl, service]
+cltl.emotionrecognition[nltk, go, face, service]
 flask
 werkzeug
