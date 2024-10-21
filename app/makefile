@@ -12,6 +12,7 @@ project_dependencies ?= $(addprefix $(project_root)/, \
         cltl-languagegeneration \
         cltl-dialogueclassification \
         cltl-emotionrecognition \
+        cltl-about-agent \
 		app)
 
 git_remote ?= https://github.com/leolani
