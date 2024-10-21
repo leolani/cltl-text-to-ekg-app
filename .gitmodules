@@ -42,3 +42,23 @@
 	path = cltl-languagegeneration
 	url = https://github.com/leolani/cltl-languagegeneration.git
 	branch = main
+[submodule "cltl.dialogueclassification"]
+	path = cltl.dialogueclassification
+	url = https://github.com/leolani/cltl-dialogueclassification.git
+	branch = main
+[submodule "cltl-dialogueclassification"]
+	path = cltl-dialogueclassification
+	url = https://github.com/leolani/cltl-dialogueclassification.git
+	branch = main
+[submodule "cltl-emotionclassification"]
+	path = cltl-emotionclassification
+	url = https://github.com/leolani/cltl-emotionrecognition.git
+	branch = main
+[submodule "cltl-about-agent"]
+	path = cltl-about-agent
+	url = https://github.com/leolani/cltl-about-agent.git
+	branch = main
+[submodule "cltl-emotionrecognition"]
+	path = cltl-emotionrecognition
+	url = https://github.com/leolani/cltl-emotionrecognition.git
+	branch = main
