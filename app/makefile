@@ -34,17 +34,13 @@ nltk.lock: venv
 	test -e nltk.lock || (source venv/bin/activate; python -m nltk.downloader -d ~/nltk_data all)
 	touch nltk.lock
 
+#py-app/resources/midas-da-roberta/classifier.pt:
+#	mkdir -p py-app/resources/midas-da-roberta
+#	wget -O py-app/resources/midas-da-roberta/classifier.pt "https://vu.data.surfsara.nl/index.php/s/lRlx3VfSJzY4h6X/download"
 
-py-app/resources/face_models/models.lock:
-	mkdir -p py-app/resources/face_models
-	wget -qO- "https://vu.data.surfsara.nl/index.php/s/VmSbPHFMJSNExou/download" | tar xvz -C py-app/resources/face_models
-	touch py-app/resources/face_models/models.lock
-
-
-py-app/resources/midas-da-roberta/classifier.pt:
-	mkdir -p py-app/resources/midas-da-roberta
-	wget -O py-app/resources/midas-da-roberta/classifier.pt "https://vu.data.surfsara.nl/index.php/s/lRlx3VfSJzY4h6X/download"
-
+py-app/resources/midas-da-xlmroberta/pytorch_model.bin:
+	mkdir -p py-app/resources/midas-da-xlmroberta
+	wget -O py-app/resources/midas-da-xlmroberta/pytorch_model.bin "https://vu.data.surfsara.nl/index.php/s/dw0YCJAVFM870DT/download"
 
 py-app/resources/conversational_triples/models.lock:
 	mkdir -p py-app/resources/conversational_triples

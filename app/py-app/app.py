@@ -43,27 +43,28 @@ from cltl.about.about import AboutImpl
 from cltl.about.api import About
 from cltl_service.about.service import AboutService
 from cltl.brain.long_term_memory import LongTermMemory
+
 from cltl.reply_generation.thought_selectors.random_selector import RandomSelector
+
 from cltl.triple_extraction.api import DialogueAct
 from cltl.triple_extraction.chat_analyzer import ChatAnalyzer
 from cltl_service.brain.service import BrainService
 from cltl_service.entity_linking.service import DisambiguationService
 from cltl_service.reply_generation.service import ReplyGenerationService
 from cltl_service.triple_extraction.service import TripleExtractionService
+
 from cltl.dialogue_act_classification.api import DialogueActClassifier
 from cltl.dialogue_act_classification.midas_classifier import MidasDialogTagger
 from cltl.dialogue_act_classification.silicone_classifier import SiliconeDialogueActClassifier
 from cltl_service.dialogue_act_classification.service import DialogueActClassificationService
+
 from cltl.emotion_extraction.api import EmotionExtractor
 from cltl.emotion_extraction.utterance_go_emotion_extractor import GoEmotionDetector
 from cltl.emotion_extraction.utterance_vader_sentiment_extractor import VaderSentimentDetector
 from cltl.emotion_responder.api import EmotionResponder
 from cltl.emotion_responder.emotion_responder import EmotionResponderImpl
-from cltl.face_emotion_extraction.api import FaceEmotionExtractor
-from cltl.face_emotion_extraction.context_face_emotion_extractor import ContextFaceEmotionExtractor
 from cltl_service.emotion_extraction.service import EmotionExtractionService
 from cltl_service.emotion_responder.service import EmotionResponderService
-from cltl_service.face_emotion_extraction.service import FaceEmotionExtractionService
 
 logging.config.fileConfig(os.environ.get('CLTL_LOGGING_CONFIG', default='config/logging.config'),
                           disable_existing_loggers=False)
@@ -193,25 +194,6 @@ class EmotionRecognitionContainer(InfraContainer):
 
     @property
     @singleton
-    def face_emotion_extractor(self) -> FaceEmotionExtractor:
-        config = self.config_manager.get_config("cltl.face_emotion_recognition")
-
-        implementation = config.get("implementation")
-        if not implementation:
-            logger.warning("No FaceEmotionExtractor configured")
-            return False
-        if implementation != "emotic":
-            raise ValueError("Unknown FaceEmotionExtractor implementation: " + implementation)
-
-        config = self.config_manager.get_config("cltl.face_emotion_recognition.emotic")
-
-        return ContextFaceEmotionExtractor(config.get("model_context"),
-                                           config.get("model_body"),
-                                           config.get("model_emotic"),
-                                           config.get("value_thresholds"))
-
-    @property
-    @singleton
     def emotion_responder(self) -> EmotionResponder:
         return EmotionResponderImpl()
 
@@ -226,15 +208,6 @@ class EmotionRecognitionContainer(InfraContainer):
 
     @property
     @singleton
-    def face_emotion_recognition_service(self) -> FaceEmotionExtractionService:
-        if self.face_emotion_extractor:
-            return FaceEmotionExtractionService.from_config(self.face_emotion_extractor, self.event_bus,
-                                                            self.resource_manager, self.config_manager)
-        else:
-            return False
-
-    @property
-    @singleton
     def emotion_responder_service(self) -> EmotionResponderService:
         return EmotionResponderService.from_config(self.emotion_responder, self.event_bus,
                                                    self.resource_manager, self.config_manager)
@@ -244,15 +217,9 @@ class EmotionRecognitionContainer(InfraContainer):
         if self.emotion_recognition_service:
             logger.info("Start Emotion Recognition service")
             self.emotion_recognition_service.start()
-        if self.face_emotion_recognition_service:
-            logger.info("Start Face Emotion Recognition service")
-            self.face_emotion_recognition_service.start()
 
     def stop(self):
         try:
-            if self.face_emotion_recognition_service:
-                logger.info("Stop Face Emotion Recognition service")
-                self.face_emotion_recognition_service.stop()
             if self.emotion_recognition_service:
                 logger.info("Stop Emotion Recognition service")
                 self.emotion_recognition_service.stop()
@@ -261,29 +228,29 @@ class EmotionRecognitionContainer(InfraContainer):
 
 
 
-class AboutAgentContainer(EmissorStorageContainer, InfraContainer):
-    @property
-    @singleton
-    def about_agent(self) -> About:
-        return AboutImpl()
-
-    @property
-    @singleton
-    def about_agent_service(self) -> GetToKnowYouService:
-        return AboutService.from_config(self.about_agent, self.emissor_data_client,
-                                        self.event_bus, self.resource_manager, self.config_manager)
-
-    def start(self):
-        logger.info("Start AboutAgent")
-        super().start()
-        self.about_agent_service.start()
-
-    def stop(self):
-        try:
-            logger.info("Stop AboutAgent")
-            self.about_agent_service.stop()
-        finally:
-            super().stop()
+# class AboutAgentContainer(EmissorStorageContainer, InfraContainer):
+#     @property
+#     @singleton
+#     def about_agent(self) -> About:
+#         return AboutImpl()
+#
+#     @property
+#     @singleton
+#     def about_agent_service(self) -> GetToKnowYouService:
+#         return AboutService.from_config(self.about_agent, self.emissor_data_client,
+#                                         self.event_bus, self.resource_manager, self.config_manager)
+#
+#     def start(self):
+#         logger.info("Start AboutAgent")
+#         super().start()
+#         self.about_agent_service.start()
+#
+#     def stop(self):
+#         try:
+#             logger.info("Stop AboutAgent")
+#             self.about_agent_service.stop()
+#         finally:
+#             super().stop()
 
 class TripleExtractionContainer(EmissorStorageContainer, InfraContainer):
     @property
@@ -533,7 +500,8 @@ class ApplicationContainer(ChatUIContainer,
                            DisambiguationContainer,
                            ReplierContainer,
                            BrainContainer,
-                           AboutAgentContainer, EmotionRecognitionContainer, DialogueActClassficationContainer,
+                           #AboutAgentContainer,
+                           EmotionRecognitionContainer, DialogueActClassficationContainer,
                            EmissorStorageContainer):
     def __init__(self, name: str):
         self._name = name
