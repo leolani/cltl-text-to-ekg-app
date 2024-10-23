@@ -57,13 +57,13 @@ py-app/resources/conversational_triples/models.lock:
 
 .PHONY: build
 build: venv \
-	nltk.lock spacy.lock \
+	nltk.lock spacy.lock ollama.lock \
 	py-app/resources/conversational_triples/models.lock \
 	py-app/resources/midas-da-xlmroberta/pytorch_model.bin \
 
 
 .PHONY: clean
 clean: py-clean base-clean
-	rm -f spacy.lock nltk.lock
+	rm -f spacy.lock nltk.lock ollama.lock
 	rm -rf py-app/resources/conversational_triples
 	rm -ff py-app/resources/midas-da-xlmroberta/
