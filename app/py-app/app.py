@@ -404,8 +404,8 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
             from cltl.reply_generation.lenka_replier import LenkaReplier
             thought_options = config.get("thought_options", multi=True) if "thought_options" in config else []
             paraphrase = config.get("paraphrase") if "paraphrase" in config else False
-            instruct = config.get("model") if "model" in config else None
-            model = config.get("instruct") if "instruct" in config else None
+            model = config.get("model") if "model" in config else None
+            instruct = config.get("instruct") if "instruct" in config else None
             temperature = config.get("temperature") if "temperature" in config else None
             max_tokens = config.get("max_tokens") if "max_tokens" in config else None
             randomness = float(config.get("randomness")) if "randomness" in config else 1.0
