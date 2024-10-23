@@ -409,7 +409,7 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
             temperature = config.get("temperature") if "temperature" in config else None
             max_tokens = config.get("max_tokens") if "max_tokens" in config else None
             randomness = float(config.get("randomness")) if "randomness" in config else 1.0
-            replier = LenkaReplier(model=model, instruct=instruct, paraphrase=paraphrase, temperature=temperature, max_tokens=max_tokens  thought_selector=RandomSelector(randomness=randomness, priority=thought_options))
+            replier = LenkaReplier(model=model, instruct=instruct, paraphrase=paraphrase, temperature=float(temperature), max_tokens=int(max_tokens), thought_selector=RandomSelector(randomness=randomness, priority=thought_options))
             repliers.append(replier)
         if "RLReplier" in implementations:
             from cltl.reply_generation.rl_replier import RLReplier
