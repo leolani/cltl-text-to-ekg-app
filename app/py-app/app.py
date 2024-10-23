@@ -403,8 +403,11 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
         if "LenkaReplier" in implementations:
             from cltl.reply_generation.lenka_replier import LenkaReplier
             thought_options = config.get("thought_options", multi=True) if "thought_options" in config else []
+            paraphrase = config.get("paraphrase") if "paraphrase" in config else False
+            instruct = config.get("model") if "model" in config else None
+            model = config.get("instruct") if "instruct" in config else None
             randomness = float(config.get("randomness")) if "randomness" in config else 1.0
-            replier = LenkaReplier(RandomSelector(randomness=randomness, priority=thought_options))
+            replier = LenkaReplier(model=model, instruct=instruct, paraphrase=paraphrase, thought_selector=RandomSelector(randomness=randomness, priority=thought_options))
             repliers.append(replier)
         if "RLReplier" in implementations:
             from cltl.reply_generation.rl_replier import RLReplier
