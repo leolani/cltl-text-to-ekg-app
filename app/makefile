@@ -29,10 +29,13 @@ spacy.lock: venv
 	test -e spacy.lock || (source venv/bin/activate; python -m spacy download nl)
 	touch spacy.lock
 
-
 nltk.lock: venv
 	test -e nltk.lock || (source venv/bin/activate; python -m nltk.downloader -d ~/nltk_data all)
 	touch nltk.lock
+
+ollama.lock: venv
+	test -e ollama.lock || (source venv/bin/activate; ollama pull llama3.2:1b)
+	ollama nltk.lock
 
 #py-app/resources/midas-da-roberta/classifier.pt:
 #	mkdir -p py-app/resources/midas-da-roberta
