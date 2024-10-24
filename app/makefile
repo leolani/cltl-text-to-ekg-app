@@ -67,4 +67,4 @@ build: venv \
 clean: py-clean base-clean
 	rm -f spacy.lock nltk.lock ollama.lock
 	rm -rf py-app/resources/conversational_triples
-	rm -ff py-app/resources/midas-da-xlmroberta/
+	rm -rf py-app/resources/midas-da-xlmroberta/
