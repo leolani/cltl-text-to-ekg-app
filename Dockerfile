@@ -57,5 +57,9 @@ RUN rm spacy.lock; make spacy.lock project_dependencies=""
 RUN rm ollama.lock; ollama serve & sleep 5 && make ollama.lock project_dependencies=""
 
 WORKDIR /leolani-text-to-ekg/app/py-app
+
+RUN printf '#!/bin/bash\nollama serve &\nsource /leolani-text-to-ekg/app/venv/bin/activate\npython app.py "$@"\n' > run.sh
+RUN chmod +x run.sh
+
 ARG NAME
-CMD source /leolani-text-to-ekg/app/venv/bin/activate && ollama serve & sleep 5 && python app.py --name $NAME
+CMD ./run.sh $NAME
