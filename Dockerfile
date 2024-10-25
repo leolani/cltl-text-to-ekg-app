@@ -17,11 +17,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libblas-dev \
         liblapack-dev \
         libatlas-base-dev \
-       # libasound-dev \
-       # libportaudio2 \
-      #  libportaudiocpp0 \
-       # portaudio19-dev \
-       # ffmpeg \
         libsm6 \
         libxext6 \
         default-jre \
@@ -29,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Get Rust; NOTE: using sh for better compatibility with other base images
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+RUN curl -fsSL https://ollama.com/install.sh | sh
 
 # Add .cargo/bin to PATH
 ENV PATH="/root/.cargo/bin:${PATH}"
@@ -42,7 +38,7 @@ WORKDIR /leolani-text-to-ekg
 COPY . ./
 
 RUN make clean
-RUN make build
+RUN ollama serve & sleep 5 && make build
 RUN make build
 
 #RUN make clean & make build & make build
@@ -58,8 +54,8 @@ COPY --from=build /root/nltk_data /root/nltk_data
 WORKDIR /leolani-text-to-ekg/app
 
 RUN rm spacy.lock; make spacy.lock project_dependencies=""
+RUN rm ollama.lock; ollama serve & sleep 5 && make ollama.lock project_dependencies=""
 
 WORKDIR /leolani-text-to-ekg/app/py-app
 ARG NAME
-CMD source /leolani-text-to-ekg/app/venv/bin/activate && python app.py --name $NAME
-#CMD /bin/sh -c "source /leolani-text-to-ekg/app/venv/bin/activate && python app.py"
+CMD source /leolani-text-to-ekg/app/venv/bin/activate && ollama serve & sleep 5 && python app.py --name $NAME
