@@ -60,7 +60,7 @@ WORKDIR /leolani-text-to-ekg/app
 RUN rm spacy.lock; make spacy.lock project_dependencies=""
 
 # Copy the models from the base stage
-COPY --from=build /usr/share/ollama/.ollama/models /root/.ollama/models
+COPY --from=build /root/.ollama/models /root/.ollama/models
 # RUN rm ollama.lock; ollama serve & sleep 5 && make ollama.lock project_dependencies=""
 
 WORKDIR /leolani-text-to-ekg/app/py-app
