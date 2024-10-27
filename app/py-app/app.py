@@ -584,7 +584,7 @@ def main(name: str):
     ApplicationContainer.load_configuration()
     logger.info("Initialized Application")
     application = ApplicationContainer(name)
-
+    logger.info("The speaker name is:", name)
     with application as started_app:
         routes = {
             '/emissor': started_app.emissor_data_service.app,
