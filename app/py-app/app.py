@@ -584,7 +584,6 @@ def main(name: str):
     ApplicationContainer.load_configuration()
     logger.info("Initialized Application")
     application = ApplicationContainer(name)
-    logger.info("The speaker name is:", name)
     with application as started_app:
         routes = {
             '/emissor': started_app.emissor_data_service.app,
@@ -600,7 +599,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Text-eKG-Text app')
     parser.add_argument('--name', type=str, required=False, help="Speaker name", default="Alice")
     args, _ = parser.parse_known_args()
-    print ('ARGS ARE:', args)
+    print ('ARG:', args.name)
 
     if not args.name.strip().isalpha():
         raise ValueError("The --name argument must contain only alphabet characters")
