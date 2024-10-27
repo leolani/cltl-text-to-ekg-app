@@ -35,7 +35,7 @@ nltk.lock: venv
 
 ollama.lock: venv
 	test -e ollama.lock || (source venv/bin/activate; ollama pull llama3.2:1b)
-	test -e ollama.lock || (source venv/bin/activate; ollama pull llama3.2)
+	#test -e ollama.lock || (source venv/bin/activate; ollama pull llama3.2)
 	touch ollama.lock
 
 #py-app/resources/midas-da-roberta/classifier.pt:
