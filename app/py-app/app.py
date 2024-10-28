@@ -405,7 +405,7 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
         if "LenkaReplier" in implementations:
             from cltl.reply_generation.lenka_replier import LenkaReplier
             thought_options = config.get("thought_options", multi=True) if "thought_options" in config else []
-            llamalize = config.get("llamalize") if "paraphrase" in config else False
+            llamalize = config.get("llamalize") if "llamalize" in config else False
             model = config.get("model") if "model" in config else None
             instruct = config.get("instruct") if "instruct" in config else None
             temperature = config.get("temperature") if "temperature" in config else None
