@@ -7,6 +7,7 @@ import uuid
 import pathlib
 import sys
 
+
 from cltl.chatui.api import Chats
 from cltl.chatui.memory import MemoryChats
 from cltl.combot.event.emissor import Agent, ScenarioStarted, ScenarioStopped, TextSignalEvent
