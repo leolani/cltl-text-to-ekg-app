@@ -5,6 +5,7 @@ import os
 import time
 import uuid
 import pathlib
+import sys
 
 from cltl.chatui.api import Chats
 from cltl.chatui.memory import MemoryChats
@@ -544,9 +545,14 @@ class ApplicationContainer(ChatUIContainer,
         }
 
         scenario_start = timestamp_now()
+        config = self.config_manager.get_config("cltl.human")
+        speaker_name = config.get("name") if "name" in config else None
 
         agent = Agent("Leolani", "http://cltl.nl/leolani/world/leolani")
-        speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
+        if speaker_name:
+            speaker = speaker_name
+        else:
+            speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
         scenario_context = ApplicationContext(agent, speaker)
         scenario = Scenario.new_instance(str(uuid.uuid4()), scenario_start, None, scenario_context, signals)
         utterance = f"Greetings %s, my name is %s and I am happy to talk to you" % (speaker.name, agent.name)
@@ -599,11 +605,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Text-eKG-Text app')
     parser.add_argument('--name', type=str, required=False, help="Speaker name", default="Alice")
     args, _ = parser.parse_known_args()
+    print('Input arguments', sys.argv)
     print ('ARG:', args.name)
 
     if not args.name.strip().isalpha():
         raise ValueError("The --name argument must contain only alphabet characters")
-    print('PLEASE ENTER YOU NAME TO PROCEED!')
-    name = input()
-    main(name.strip())
-    #main(args.name.strip())
+
+    main(args.name.strip())
