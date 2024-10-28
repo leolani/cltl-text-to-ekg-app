@@ -551,6 +551,7 @@ class ApplicationContainer(ChatUIContainer,
         speaker_name = config.get("name") if "name" in config else None
         if speaker_name:
             self._name = speaker_name
+        logger.info("Human speaker is set to", self._name)
         speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
         scenario_context = ApplicationContext(agent, speaker)
         scenario = Scenario.new_instance(str(uuid.uuid4()), scenario_start, None, scenario_context, signals)
