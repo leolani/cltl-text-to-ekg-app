@@ -546,14 +546,12 @@ class ApplicationContainer(ChatUIContainer,
         }
 
         scenario_start = timestamp_now()
+        agent = Agent("Leolani", "http://cltl.nl/leolani/world/leolani")
         config = self.config_manager.get_config("cltl.human")
         speaker_name = config.get("name") if "name" in config else None
-
-        agent = Agent("Leolani", "http://cltl.nl/leolani/world/leolani")
         if speaker_name:
-            speaker = speaker_name
-        else:
-            speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
+            self._name = speaker_name
+        speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
         scenario_context = ApplicationContext(agent, speaker)
         scenario = Scenario.new_instance(str(uuid.uuid4()), scenario_start, None, scenario_context, signals)
         utterance = f"Greetings %s, my name is %s and I am happy to talk to you" % (speaker.name, agent.name)
