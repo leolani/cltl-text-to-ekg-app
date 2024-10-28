@@ -549,7 +549,7 @@ class ApplicationContainer(ChatUIContainer,
         speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
         scenario_context = ApplicationContext(agent, speaker)
         scenario = Scenario.new_instance(str(uuid.uuid4()), scenario_start, None, scenario_context, signals)
-        utterance = f"Greetings", speaker.name, "my name is", agent.name, "happy to talk to you!"
+        utterance = f"Greetings %s, my name is %s and I am happy to talk to you" % (speaker.name, agent.name)
         signal = TextSignal.for_scenario(scenario, timestamp_now(), timestamp_now(), None, utterance)
         self.event_bus.publish("cltl.topic.text_out", Event.for_payload(TextSignalEvent.for_agent(signal)))
         return scenario
@@ -603,5 +603,7 @@ if __name__ == '__main__':
 
     if not args.name.strip().isalpha():
         raise ValueError("The --name argument must contain only alphabet characters")
-
-    main(args.name.strip())
+    print('PLEASE ENTER YOU NAME TO PROCEED!')
+    name = input()
+    main(name.strip())
+    #main(args.name.strip())
