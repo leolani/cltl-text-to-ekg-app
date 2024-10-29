@@ -2,71 +2,50 @@ import argparse
 import logging.config
 import logging.config
 import os
-import time
-import uuid
 import pathlib
 import sys
-
-
-from cltl.chatui.api import Chats
-from cltl.chatui.memory import MemoryChats
-from cltl.combot.event.emissor import Agent, ScenarioStarted, ScenarioStopped, TextSignalEvent
-from cltl.combot.infra.config.k8config import K8LocalConfigurationContainer
-from cltl.combot.infra.di_container import singleton
-from cltl.combot.infra.event import Event
-from cltl.combot.infra.event.memory import SynchronousEventBusContainer
-from cltl.combot.infra.event_log import LogWriter
-from cltl.combot.infra.resource.threaded import ThreadedResourceContainer
-from cltl.combot.infra.time_util import timestamp_now
-from cltl.emissordata.api import EmissorDataStorage
-from cltl.emissordata.file_storage import EmissorDataFileStorage
-from emissor.representation.scenario import Modality, Scenario, ScenarioContext
-from emissor.representation.scenario import TextSignal
-
-from cltl_service.chatui.service import ChatUiService
-from cltl_service.combot.event_log.service import EventLogService
-
-from cltl_service.emissordata.client import EmissorDataClient
-from cltl_service.emissordata.service import EmissorDataService
-from emissor.representation.util import serializer as emissor_serializer
-from flask import Flask
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from werkzeug.serving import run_simple
-
-from emissor.representation.ldschema import emissor_dataclass
-
-from myapp.template.api import DemoProcessor
-from myapp.template.dummy_demo import HelloWorldProcessor
-from myapp_service.template.service import DemoService
-
-#### Added imports
-
-from cltl.about.about import AboutImpl
-from cltl.about.api import About
-from cltl_service.about.service import AboutService
-from cltl.brain.long_term_memory import LongTermMemory
-
-from cltl.reply_generation.thought_selectors.random_selector import RandomSelector
-
-from cltl.triple_extraction.api import DialogueAct
-from cltl.triple_extraction.chat_analyzer import ChatAnalyzer
-from cltl_service.brain.service import BrainService
-from cltl_service.entity_linking.service import DisambiguationService
-from cltl_service.reply_generation.service import ReplyGenerationService
-from cltl_service.triple_extraction.service import TripleExtractionService
+import time
 
 from cltl.dialogue_act_classification.api import DialogueActClassifier
 from cltl.dialogue_act_classification.midas_classifier import MidasDialogTagger
 from cltl.dialogue_act_classification.silicone_classifier import SiliconeDialogueActClassifier
-from cltl_service.dialogue_act_classification.service import DialogueActClassificationService
-
 from cltl.emotion_extraction.api import EmotionExtractor
 from cltl.emotion_extraction.utterance_go_emotion_extractor import GoEmotionDetector
 from cltl.emotion_extraction.utterance_vader_sentiment_extractor import VaderSentimentDetector
 from cltl.emotion_responder.api import EmotionResponder
 from cltl.emotion_responder.emotion_responder import EmotionResponderImpl
+from cltl_service.dialogue_act_classification.service import DialogueActClassificationService
 from cltl_service.emotion_extraction.service import EmotionExtractionService
 from cltl_service.emotion_responder.service import EmotionResponderService
+from flask import Flask
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.serving import run_simple
+
+from cltl.brain.long_term_memory import LongTermMemory
+from cltl.chatui.api import Chats
+from cltl.chatui.memory import MemoryChats
+from cltl.combot.infra.config.k8config import K8LocalConfigurationContainer
+from cltl.combot.infra.di_container import singleton
+from cltl.combot.infra.event.memory import SynchronousEventBusContainer
+from cltl.combot.infra.event_log import LogWriter
+from cltl.combot.infra.resource.threaded import ThreadedResourceContainer
+from cltl.emissordata.api import EmissorDataStorage
+from cltl.emissordata.file_storage import EmissorDataFileStorage
+from cltl.reply_generation.thought_selectors.random_selector import RandomSelector
+from cltl.triple_extraction.api import DialogueAct
+from cltl.triple_extraction.chat_analyzer import ChatAnalyzer
+from cltl_service.brain.service import BrainService
+from cltl_service.chatui.service import ChatUiService
+from cltl_service.combot.event_log.service import EventLogService
+from cltl_service.emissordata.client import EmissorDataClient
+from cltl_service.emissordata.service import EmissorDataService
+from cltl_service.entity_linking.service import DisambiguationService
+from cltl_service.reply_generation.service import ReplyGenerationService
+from cltl_service.triple_extraction.service import TripleExtractionService
+from emissor.representation.util import serializer as emissor_serializer
+from myapp_service.context.service import ContextService
+
+#### Added imports
 
 logging.config.fileConfig(os.environ.get('CLTL_LOGGING_CONFIG', default='config/logging.config'),
                           disable_existing_loggers=False)
@@ -475,31 +454,21 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
 ##### End of added containers
 
 
-class DemoContainer(InfraContainer):
+class ContextContainer(InfraContainer):
     @property
     @singleton
-    def processor(self) -> DemoProcessor:
-        return HelloWorldProcessor()
-
-    @property
-    @singleton
-    def demo_service(self) -> DemoService:
-        return DemoService.from_config(self.processor, self.event_bus, self.resource_manager, self.config_manager)
+    def context_service(self) -> ContextService:
+        return ContextService.from_config(self.event_bus, self.resource_manager, self.config_manager)
 
     def start(self):
-        logger.info("Start Demo Service")
+        logger.info("Start Context Service")
         super().start()
-        self.demo_service.start()
+        self.context_service.start()
 
     def stop(self):
-        logger.info("Stop Demo Service")
-        self.demo_service.stop()
+        logger.info("Stop Context Service")
+        self.context_service.stop()
         super().stop()
-
-
-@emissor_dataclass
-class ApplicationContext(ScenarioContext):
-    speaker: Agent
 
 
 class ApplicationContainer(ChatUIContainer,
@@ -508,6 +477,7 @@ class ApplicationContainer(ChatUIContainer,
                            ReplierContainer,
                            BrainContainer,
                            #AboutAgentContainer,
+                           ContextContainer,
                            EmotionRecognitionContainer, DialogueActClassficationContainer,
                            EmissorStorageContainer):
     def __init__(self, name: str):
@@ -525,50 +495,15 @@ class ApplicationContainer(ChatUIContainer,
     def event_log_service(self):
         return EventLogService.from_config(self.log_writer, self.event_bus, self.config_manager)
 
-    def _start_scenario(self):
-        scenario_topic = self.config_manager.get_config("cltl.context").get("topic_scenario")
-        scenario = self._create_scenario()
-        self.event_bus.publish(scenario_topic,
-                               Event.for_payload(ScenarioStarted.create(scenario)))
-        self._scenario = scenario
-        logger.info("Started scenario %s", scenario)
-
-    def _stop_scenario(self):
-        scenario_topic = self.config_manager.get_config("cltl.context").get("topic_scenario")
-        self._scenario.ruler.end = timestamp_now()
-        self.event_bus.publish(scenario_topic,
-                               Event.for_payload(ScenarioStopped.create(self._scenario)))
-        logger.info("Stopped scenario %s", self._scenario)
-
-    def _create_scenario(self):
-        signals = {
-            Modality.TEXT.name.lower(): "./text.json",
-        }
-
-        scenario_start = timestamp_now()
-        agent = Agent("Leolani", "http://cltl.nl/leolani/world/leolani")
-        config = self.config_manager.get_config("cltl.human")
-        speaker_name = config.get("name") if "name" in config else None
-        if speaker_name:
-            self._name = speaker_name
-        logger.info("Human speaker is set to", self._name)
-        speaker = Agent(self._name, f"http://cltl.nl/leolani/world/{self._name.lower()}")
-        scenario_context = ApplicationContext(agent, speaker)
-        scenario = Scenario.new_instance(str(uuid.uuid4()), scenario_start, None, scenario_context, signals)
-        utterance = f"Greetings %s, my name is %s and I am happy to talk to you" % (speaker.name, agent.name)
-        signal = TextSignal.for_scenario(scenario, timestamp_now(), timestamp_now(), None, utterance)
-        self.event_bus.publish("cltl.topic.text_out", Event.for_payload(TextSignalEvent.for_agent(signal)))
-        return scenario
-
     def start(self):
         logger.info("Start EventLog")
         super().start()
         self.event_log_service.start()
-        self._start_scenario()
+        self.context_service.start_scenario()
 
     def stop(self):
         try:
-            self._stop_scenario()
+            self.context_service.stop_scenario()
             time.sleep(1)
             logger.info("Stop EventLog")
             self.event_log_service.stop()
