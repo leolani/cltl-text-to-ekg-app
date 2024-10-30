@@ -2,7 +2,7 @@ import logging
 import uuid
 from typing import Optional
 
-from build.lib.cltl.combot.event.emissor import ScenarioStopped
+from cltl.combot.event.emissor import ScenarioStopped
 from cltl.combot.event.emissor import TextSignalEvent, Agent, ScenarioStarted, ScenarioEvent
 from cltl.combot.infra.config import ConfigurationManager
 from cltl.combot.infra.event import Event, EventBus
