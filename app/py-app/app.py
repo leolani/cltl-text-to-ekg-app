@@ -389,8 +389,9 @@ class ReplierContainer(BrainContainer, EmissorStorageContainer, InfraContainer):
             instruct = config.get("instruct") if "instruct" in config else None
             temperature = config.get("temperature") if "temperature" in config else None
             max_tokens = config.get("max_tokens") if "max_tokens" in config else None
+            show_lenka = config.get("show_lenka") if "show_lenka" in config else False
             randomness = float(config.get("randomness")) if "randomness" in config else 1.0
-            replier = LenkaReplier(model=model, instruct=instruct, llamalize=llamalize, temperature=float(temperature), max_tokens=int(max_tokens), thought_selector=RandomSelector(randomness=randomness, priority=thought_options))
+            replier = LenkaReplier(model=model, instruct=instruct, llamalize=llamalize, temperature=float(temperature), max_tokens=int(max_tokens), show_lenka=show_lenka, thought_selector=RandomSelector(randomness=randomness, priority=thought_options))
             repliers.append(replier)
         if "RLReplier" in implementations:
             from cltl.reply_generation.rl_replier import RLReplier
@@ -480,8 +481,8 @@ class ApplicationContainer(ChatUIContainer,
                            ContextContainer,
                            EmotionRecognitionContainer, DialogueActClassficationContainer,
                            EmissorStorageContainer):
-    def __init__(self, name: str):
-        self._name = name
+    # def __init__(self, name: str):
+    #     self._name = name
 
     @property
     @singleton
@@ -520,11 +521,10 @@ def serializer(obj):
         except Exception:
             return str(obj)
 
-
-def main(name: str):
+def main():
     ApplicationContainer.load_configuration()
     logger.info("Initialized Application")
-    application = ApplicationContainer(name)
+    application = ApplicationContainer()
     with application as started_app:
         routes = {
             '/emissor': started_app.emissor_data_service.app,
@@ -537,13 +537,48 @@ def main(name: str):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Text-eKG-Text app')
-    parser.add_argument('--name', type=str, required=False, help="Speaker name", default="Alice")
-    args, _ = parser.parse_known_args()
-    print('Input arguments', sys.argv)
-    print ('ARG:', args.name)
+    main()
 
-    if not args.name.strip().isalpha():
-        raise ValueError("The --name argument must contain only alphabet characters")
 
-    main(args.name.strip())
+# def main(name: str):
+#     ApplicationContainer.load_configuration()
+#     logger.info("Initialized Application")
+#     application = ApplicationContainer(name)
+#     with application as started_app:
+#         routes = {
+#             '/emissor': started_app.emissor_data_service.app,
+#             '/chatui': started_app.chatui_service.app,
+#         }
+#
+#         web_app = DispatcherMiddleware(Flask("Text-eKG-Text app"), routes)
+#
+#         run_simple('0.0.0.0', 8000, web_app, threaded=True, use_reloader=False, use_debugger=False, use_evalex=True)
+#
+#
+# if __name__ == '__main__':
+    # To run this from docker:
+# In docker-compose.yml
+#     entrypoint:
+#       - ./run.sh
+#     command:
+#       - --name
+#       - Fred
+# In Dockerfile:
+# WORKDIR /leolani-text-to-ekg/app/py-app
+#
+# RUN printf '#!/bin/bash\nollama serve &\nsource /leolani-text-to-ekg/app/venv/bin/activate\npython app.py "$@"\n' > run.sh
+# RUN chmod +x run.sh
+#
+# ARG NAME
+# CMD ./run.sh --name $NAME
+
+#     parser = argparse.ArgumentParser(description='Text-eKG-Text app')
+#     parser.add_argument('--name', type=str, required=False, help="Speaker name", default="Alice")
+#     args, _ = parser.parse_known_args()
+#     print('Input arguments', sys.argv)
+#     print ('ARG:', args.name)
+#
+#     if not args.name.strip().isalpha():
+#         raise ValueError("The --name argument must contain only alphabet characters")
+#
+#     main(args.name.strip())
