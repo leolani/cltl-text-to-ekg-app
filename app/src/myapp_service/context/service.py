@@ -86,7 +86,7 @@ class ContextService:
                 self._event_bus.publish(self._output_topic, Event.for_payload(TextSignalEvent.for_agent(signal)))
                 logger.info("Requested speaker name for scenario %s", event.payload.scenario.id)
         elif event.metadata.topic == self._input_topic:
-            if self._scenario and self._name and event.payload.signal.text.lower() == "goodbye":
+            if self._scenario and self._name and (event.payload.signal.text.lower() == "goodbye" or event.payload.signal.text.lower() == "bye"):
                 logger.debug("Received stop word for scenario %s", self._scenario.id)
 
                 signal = TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None, "Goodbye!")
@@ -95,7 +95,9 @@ class ContextService:
                 self.stop_scenario()
             elif self._scenario and self._name:
                 logger.debug("Forwarded text signal %s", event.payload.signal.text)
-                self._event_bus.publish(self._forward_topic, Event.for_payload(event.payload))
+                signal = TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None, event.payload.signal.text)
+                self._event_bus.publish(self._forward_topic, Event.for_payload(TextSignalEvent.for_agent(signal)))
+                #self._event_bus.publish(self._forward_topic, Event.for_payload(event.payload))
             elif self._scenario and not self._name:
                 self._name = event.payload.signal.text
                 self._update_scenario_speaker(self._name)
@@ -146,7 +148,7 @@ class ContextService:
         }
 
         scenario_start = timestamp_now()
-        agent = Agent("Leolani", "http://cltl.nl/leolani/world/leolani")
+        agent = "http://cltl.nl/leolani/world/leolani"
         scenario_context = ApplicationContext(agent, None)
 
         return Scenario.new_instance(str(uuid.uuid4()), scenario_start, None, scenario_context, signals)
