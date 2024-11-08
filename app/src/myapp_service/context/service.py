@@ -1,6 +1,7 @@
 import logging
 import uuid
 from typing import Optional
+import time
 
 from cltl.combot.event.emissor import ScenarioStopped
 from cltl.combot.event.emissor import TextSignalEvent, Agent, ScenarioStarted, ScenarioEvent
@@ -87,20 +88,27 @@ class ContextService:
                 self._event_bus.publish(self._output_topic, Event.for_payload(TextSignalEvent.for_agent(signal)))
                 logger.info("Requested speaker name for scenario %s", event.payload.scenario.id)
         elif event.metadata.topic == self._input_topic:
-            if self._scenario and self._name and (event.payload.signal.text.lower() == "goodbye" or event.payload.signal.text.lower() == "bye"):
+            if self._scenario and self._name and (
+                    "goodbye" in event.payload.signal.text.lower() or "bye" in event.payload.signal.text.lower()):
+                ### Store the last user utterance in emissor
+                ### TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None, event.payload.signal.text)
                 logger.debug("Received stop word for scenario %s", self._scenario.id)
-                signal = TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None, f"Goodbye {self._name}! See you soon.")
+                signal = TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None,
+                                                 f"Goodbye {self._name}! See you soon.")
                 self._event_bus.publish(self._output_topic, Event.for_payload(TextSignalEvent.for_agent(signal)))
+                time.sleep(5)
                 self.stop_scenario()
             elif self._scenario and self._name:
                 logger.debug("Forwarded text signal %s", event.payload.signal.text)
-                signal = TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None, event.payload.signal.text)
-                self._event_bus.publish(self._forward_topic, Event.for_payload(TextSignalEvent.for_agent(signal)))
                 self._event_bus.publish(self._forward_topic, Event.for_payload(event.payload))
             elif self._scenario and not self._name:
+                ### Store the  user utterance in emissor
+                #TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None, event.payload.signal.text)
+
                 self._name = event.payload.signal.text
                 self._update_scenario_speaker(self._name)
-                signal = TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None, f"Hi {self._name}! Please, tell me something about yourself.")
+                signal = TextSignal.for_scenario(self._scenario.id, timestamp_now(), timestamp_now(), None,
+                                                 f"Hi {self._name}! Please, tell me something about yourself.")
                 self._event_bus.publish(self._output_topic, Event.for_payload(TextSignalEvent.for_agent(signal)))
             elif not self._scenario:
                 logger.debug("Received text signal outside scenario: %s", event.payload.signal.text)
