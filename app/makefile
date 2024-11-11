@@ -42,14 +42,20 @@ ollama.lock: venv
 #	mkdir -p py-app/resources/midas-da-roberta
 #	wget -O py-app/resources/midas-da-roberta/classifier.pt "https://vu.data.surfsara.nl/index.php/s/lRlx3VfSJzY4h6X/download"
 
-py-app/resources/midas-da-xlmroberta/pytorch_model.bin:
+py-app/resources/midas-da-xlmroberta/models.lock:
 	mkdir -p py-app/resources/midas-da-xlmroberta
-	wget -O py-app/resources/midas-da-xlmroberta/pytorch_model.bin "https://vu.data.surfsara.nl/index.php/s/dw0YCJAVFM870DT/download"
+	wget "https://vu.data.surfsara.nl/index.php/s/dw0YCJAVFM870DT/download" -O py-app/resources/midas-da-xlmroberta/models.zip
+	unzip -j -d py-app/resources/midas-da-xlmroberta py-app/resources/midas-da-xlmroberta/models.zip
+	rm py-app/resources/midas-da-xlmroberta/models.zip
+	touch py-app/resources/midas-da-xlmroberta/models.lock
 
-py-app/resources/bert-base-go-emotion/pytorch_model.bin:
+py-app/resources/bert-base-go-emotion/models.lock:
 	mkdir -p py-app/resources/bert-base-go-emotion
-	wget -O py-app/resources/bert-base-go-emotionpytorch_model.bin "https://vu.data.surfsara.nl/index.php/s/VjHn1AHgizlzov6/download"
-
+	wget "https://vu.data.surfsara.nl/index.php/s/VjHn1AHgizlzov6/download" -O py-app/resources/bert-base-go-emotion/models.zip
+	unzip -j -d py-app/resources/bert-base-go-emotion py-app/resources/bert-base-go-emotion/models.zip
+	rm py-app/resources/bert-base-go-emotion/models.zip
+	touch py-app/resources/bert-base-go-emotion/models.lock
+	
 py-app/resources/conversational_triples/models.lock:
 	mkdir -p py-app/resources/conversational_triples
 	wget "https://vu.data.surfsara.nl/index.php/s/Ib6OcZHpfUyB5fm/download" -O py-app/resources/conversational_triples/argument_extraction_bert-base-multilingual-cased.pt
@@ -64,12 +70,13 @@ py-app/resources/conversational_triples/models.lock:
 build: venv \
 	nltk.lock spacy.lock ollama.lock \
 	py-app/resources/conversational_triples/models.lock \
-	py-app/resources/midas-da-xlmroberta/pytorch_model.bin \
-	py-app/resources/bert-base-go-emotion/pytorch_model.bin \
+	py-app/resources/midas-da-xlmroberta/models.lock \
+	py-app/resources/bert-base-go-emotion/models.lock \
 
 .PHONY: clean
 clean: py-clean base-clean
 	rm -f spacy.lock nltk.lock ollama.lock
-	rm -rf py-app/resources/conversational_triples
-	rm -rf py-app/resources/midas-da-xlmroberta/
-	rm -rf py-app/resources/bert-base-go-emotion/
+	rm -rf py-app/resources/conversational_triples/models.lock
+	rm -rf py-app/resources/midas-da-xlmroberta/models.lock
+	rm -rf py-app/resources/bert-base-go-emotion/models.lock
+	
